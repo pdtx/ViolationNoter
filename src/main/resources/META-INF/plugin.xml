@@ -1,0 +1,30 @@
+<idea-plugin>
+    <id>com.yaki.annotation.id</id>
+    <name>annotation-tool</name>
+    <version>1.1.1</version>
+    <vendor>yaki</vendor>
+
+    <description><![CDATA[
+      a convenient tool that helps annotators with the violation annotation process.
+    ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow factoryClass="com.yaki.window.NoteListWindowFactory" id="notewindow" anchor="right"></toolWindow>
+        <toolWindow factoryClass="com.yaki.window.ScanListWindowFactory" id="scanFileWindow" anchor="bottom"></toolWindow>
+    </extensions>
+    <actions>
+        <action id="PopupAction_ID" class="com.yaki.action.PopupAction" text="添加MB笔记" description="点击添加代码笔记吧">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+        <action id="ScanFile_ID" class="com.yaki.action.ScanFile" text="查询文件的缺陷信息"
+                description="查询已扫描文件的缺陷信息">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
