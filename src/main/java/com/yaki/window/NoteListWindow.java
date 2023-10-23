@@ -45,7 +45,7 @@ public class NoteListWindow {
                 String topic = textField1.getText();
                 String fileName = topic+".md";
                 if(topic==null||"".equals(topic)){
-                    Messages.showMessageDialog("文档标题没有输入", "操作结果",Messages.getInformationIcon());
+                    Messages.showMessageDialog("Title is empty", "Result",Messages.getWarningIcon());
                     return;
                 }
 
@@ -84,7 +84,7 @@ public class NoteListWindow {
                         }
 
                         //生成文件成功弹窗
-                        Messages.showMessageDialog(project,"生成文档成功", "操作结果",Messages.getInformationIcon());
+                        Messages.showMessageDialog(project,"Save successfully", "Result",Messages.getInformationIcon());
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }

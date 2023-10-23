@@ -25,8 +25,6 @@ dependencies{
 
     // https://mvnrepository.com/artifact/org.json/json
     implementation("org.json:json:20230227")
-
-
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -59,4 +57,9 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+}
+
+// 设置编码为 UTF-8
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }

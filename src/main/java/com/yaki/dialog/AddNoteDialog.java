@@ -16,7 +16,8 @@ public class AddNoteDialog extends DialogWrapper {
     private EditorTextField tfMark;
     public AddNoteDialog() {
         super(true);
-        setTitle("添加笔记");
+        setTitle("Add Note");
+        setSize(400, 250);
         init();
     }
 
@@ -24,19 +25,31 @@ public class AddNoteDialog extends DialogWrapper {
     protected @Nullable JComponent createCenterPanel() {
         //new BorderLayout布局，还有其他布局方式
         JPanel panel = new JPanel(new BorderLayout());
-        tfTitle= new EditorTextField("笔记标题");
-        tfMark = new EditorTextField("笔记内容");
-        //设置框的大小
+
+        JPanel panel_title = new JPanel(new BorderLayout());
+        JLabel label1 = new JLabel("Please enter the title of the note:");
+        tfTitle= new EditorTextField();
+        tfTitle.setPlaceholder("note title");
+        panel_title.add(label1, BorderLayout.NORTH);
+        panel_title.add(tfTitle, BorderLayout.CENTER);
+
+        JPanel panel_content = new JPanel(new BorderLayout());
+        JLabel label2 = new JLabel("Please enter the content of the note:");
+        tfMark = new EditorTextField();
+        tfMark.setPlaceholder("note content");
         tfMark.setPreferredSize(new Dimension(200,100));
-        panel.add(tfTitle,BorderLayout.NORTH);
-        panel.add(tfMark,BorderLayout.CENTER);
+        panel_content.add(label2, BorderLayout.NORTH);
+        panel_content.add(tfMark, BorderLayout.CENTER);
+
+        panel.add(panel_title,BorderLayout.NORTH);
+        panel.add(panel_content,BorderLayout.CENTER);
         return panel;
     }
 
     @Override
     protected JComponent createSouthPanel() {
         JPanel panel = new JPanel();
-        JButton button = new JButton("添加到笔记列表");
+        JButton button = new JButton("Add to NoteList");
         button.addActionListener(e -> {
             String title = tfTitle.getText();
             String mark = tfMark.getText();
@@ -46,7 +59,7 @@ public class AddNoteDialog extends DialogWrapper {
             DataCenter.NOTE_LIST.add(noteData);
             DataCenter.TABLE_MODEL.addRow(DataConvert.convert(noteData));
             //添加笔记成功弹窗
-            Messages.showMessageDialog("添加成功","操作结果",Messages.getInformationIcon());
+            Messages.showMessageDialog("Add successfully","Result",Messages.getInformationIcon());
 
 
             AddNoteDialog.this.dispose();

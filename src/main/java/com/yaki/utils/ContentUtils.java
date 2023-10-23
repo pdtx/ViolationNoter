@@ -61,7 +61,7 @@ public class ContentUtils {
         // 设置post请求超时时间
         getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
         getMethod.addRequestHeader("Content-Type", "application/json");
-        getMethod.addRequestHeader("Authorization", "Bearer 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");
+//        getMethod.addRequestHeader("Authorization", "Bearer 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");
         httpClient.executeMethod(getMethod);
 
         String result = getMethod.getResponseBodyAsString();
@@ -142,7 +142,12 @@ public class ContentUtils {
 
     //issue信息
     public static void setIssue(String url) throws IOException {
-        JSONArray jsonArray = JSONArray.parseArray(sendGet(url));
+        String result = sendGet(url);
+        System.out.println("issues:"+result);
+        if (result.startsWith("{")){
+            throw new IOException(result);
+        }
+        JSONArray jsonArray = JSONArray.parseArray(result);
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject row = jsonArray.getJSONObject(i) ;
             String issueUrl = (String) row.get("url");

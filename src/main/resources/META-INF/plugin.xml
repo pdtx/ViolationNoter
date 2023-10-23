@@ -1,29 +1,39 @@
 <idea-plugin>
+    <!-- 插件的唯一标识符，应该是FQN，不设置即name（不推荐） -->
     <id>com.yaki.annotation.id</id>
+
+    <!-- 插件名 -->
     <name>annotation-tool</name>
+
+    <!-- 插件版本，格式：BRANCH.BUILD.FIX (MAJOR.MINOR.FIX) -->
     <version>1.1.1</version>
     <vendor>yaki</vendor>
 
+    <!-- 插件描述，使用<![CDATA[  ]]> 来支持HTML格式-->
     <description><![CDATA[
       a convenient tool that helps annotators with the violation annotation process.
     ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <!-- 插件依赖，可以依赖模块或插件 -->
     <depends>com.intellij.modules.platform</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <!-- 声明该插件对IDEA core或其他插件的扩展，Ns是NameSpace的缩写 -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.yaki.window.NoteListWindowFactory" id="notewindow" anchor="right"></toolWindow>
-        <toolWindow factoryClass="com.yaki.window.ScanListWindowFactory" id="scanFileWindow" anchor="bottom"></toolWindow>
+        <toolWindow factoryClass="com.yaki.window.NoteListWindowFactory" id="NoteWindow" icon="AllIcons.Actions.Edit" anchor="right"/>
+        <toolWindow factoryClass="com.yaki.window.ScanListWindowFactory" id="ScanFileWindow" icon="AllIcons.Actions.Search" anchor="bottom"/>
     </extensions>
+
+    <!-- 行为 https://plugins.jetbrains.com/docs/intellij/plugin-actions.html-->
     <actions>
-        <action id="PopupAction_ID" class="com.yaki.action.PopupAction" text="添加MB笔记" description="点击添加代码笔记吧">
+        <action id="PopupAction_ID" class="com.yaki.action.PopupAction" text="Add MB Note" description="Click to add code notes">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
-        <action id="ScanFile_ID" class="com.yaki.action.ScanFile" text="查询文件的缺陷信息"
-                description="查询已扫描文件的缺陷信息">
+        <action id="ScanFile_ID" class="com.yaki.action.ScanFile" text="Query File Issue Information"
+                description="Query issue information of files scanned">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
     </actions>

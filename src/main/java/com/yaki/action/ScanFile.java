@@ -14,6 +14,7 @@ import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class ScanFile extends AnAction {
     //获取当前提交号
@@ -31,13 +32,13 @@ public class ScanFile extends AnAction {
         //获取文件名
         VirtualFile virtualFile = e.getRequiredData(CommonDataKeys.PSI_FILE).getViewProvider().getVirtualFile();
         String url = virtualFile.getPath();
+        String projectBasePath = Objects.requireNonNull(e.getProject()).getBasePath();
 
-        DataCenter.file_path = url.substring(url.indexOf("src"));
-
-        String repoName = url.substring(0,url.indexOf("/src"));//"E:/projectSet/jmeter"
-        DataCenter.repoName = repoName.substring(repoName.lastIndexOf("/")+1);
+        DataCenter.file_path = url.substring(url.indexOf(projectBasePath)+projectBasePath.length()+1);
+        DataCenter.repoName = projectBasePath.substring(projectBasePath.lastIndexOf("/")+1);
 
         System.out.println("file_path:"+ DataCenter.file_path);
+        System.out.println("repoName:"+ DataCenter.repoName);
 
         if (!DataCenter.login){
             //如果未登录

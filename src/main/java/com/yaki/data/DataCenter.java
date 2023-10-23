@@ -14,7 +14,7 @@ public class DataCenter {
     public static String repoName;
     public static String file_path;
     public static String commitId;//commitId
-    public static String preTracker = "http://10.176.34.82:8865/issue/tracker-file?repo_uuid=";//github api前缀
+    public static String preTracker = "http://10.176.34.96:8105/issue/tracker-file?repo_uuid=";//github api前缀
     public static String preUrl = "https://api.github.com/repos/apache/";//github api前缀
     public static FileData fileData;
 
@@ -25,7 +25,7 @@ public class DataCenter {
     public static List<NoteData> NOTE_LIST = new LinkedList<NoteData>();
 
     public static SourceNoteData sourceNoteData;
-    public static String[] HEAD={"标题","备注","文件名","代码段"};
+    public static String[] HEAD={"Title","Content","Filename","Code"};
 
     //[][]data,[]columnNames,即数据和表头
     public static DefaultTableModel TABLE_MODEL = new DefaultTableModel(null,HEAD);
