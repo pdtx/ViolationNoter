@@ -18,6 +18,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <!-- 插件依赖，可以依赖模块或插件 -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>Git4Idea</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -25,7 +26,13 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.yaki.window.NoteListWindowFactory" id="NoteWindow" icon="AllIcons.Actions.Edit" anchor="right"/>
         <toolWindow factoryClass="com.yaki.window.ScanListWindowFactory" id="ScanFileWindow" icon="AllIcons.Actions.Search" anchor="bottom"/>
+        <toolWindow factoryClass="com.yaki.window.ViolationWindowFactory" id="ViolationWindow" icon="AllIcons.Actions.Search" anchor="bottom"/>
     </extensions>
+
+    <projectListeners>
+        <listener class="com.yaki.window.ViolationWindowManagerListener"
+                  topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+    </projectListeners>
 
     <!-- 行为 https://plugins.jetbrains.com/docs/intellij/plugin-actions.html-->
     <actions>

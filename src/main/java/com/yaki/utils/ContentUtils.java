@@ -11,12 +11,13 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
 //用于发送请求获取数据
 public class ContentUtils {
-    public static JSONObject sendPost(String urlParam) throws IOException {
+    public static JSONObject sendPost(String urlParam, JSONObject requestData) throws IOException {
         // 创建httpClient实例对象
         HttpClient httpClient = new HttpClient();
         // 设置httpClient连接主机服务器超时时间：15000毫秒
@@ -26,14 +27,15 @@ public class ContentUtils {
         // 设置post请求超时时间
         postMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
         postMethod.addRequestHeader("Content-Type", "application/json");
+        // 将JSON对象转换为字符串，并设置为请求主体
+        StringRequestEntity requestEntity = new StringRequestEntity(requestData.toJSONString(), "application/json", "UTF-8");
+        postMethod.setRequestEntity(requestEntity);
 
         httpClient.executeMethod(postMethod);
 
         String result = postMethod.getResponseBodyAsString();
         postMethod.releaseConnection();
-        JSONObject res = new JSONObject(JSON.parseObject(result));
-//        return result;
-        return res;
+        return new JSONObject(JSON.parseObject(result));
     }
     public static String sendGetTracker(String urlParam) throws HttpException, IOException {
         // 创建httpClient实例对象
@@ -139,6 +141,24 @@ public class ContentUtils {
 
     }
 
+    //注册成为标记员
+    public static void register(String url, String username, String email) throws Exception {
+        JSONObject requestData = new JSONObject();
+        requestData.put("userName", username);
+        requestData.put("email", email);
+
+        JSONObject response = sendPost(url, requestData);
+
+        System.out.println("registerResponse:"+response);
+        // TODO: 记录uuid
+        if ((Integer) response.get("code") == 200) {
+//            5ef2082a-b23d-309d-a0dc-0c07a48ee32d
+            DataCenter.userUuid = (String) response.get("data");
+            DataCenter.login = true;
+        } else {
+            throw new RuntimeException(String.valueOf(response));
+        }
+    }
 
     //issue信息
     public static void setIssue(String url) throws IOException {

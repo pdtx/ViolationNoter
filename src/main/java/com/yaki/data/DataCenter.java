@@ -11,6 +11,9 @@ import java.util.List;
 
 public class DataCenter {
     public static boolean login;//登录状态
+    public static String registerUrl = "http://10.176.34.85:8155/annotator";
+    public static String userUuid;
+
     public static String repoName;
     public static String file_path;
     public static String commitId;//commitId
@@ -43,15 +46,20 @@ public class DataCenter {
     public static String[] COLUMN_ISSUE={"Url","Title","Author","State","Date","Comments"};
     public static DefaultTableModel ISSUE_MODEL = new DefaultTableModel(null,COLUMN_ISSUE);
     //-------------------------------------------------------------------------------
+    //表头
+    public static String[] COLUMN_VIOLATION_ISSUE={"FilePath","Line","Type","Message","引入TP/FP","修复TP/FP","Actionable","Priority","Repair Details","Remark"};
+    public static DefaultTableModel VIOLATION_ISSUE_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_ISSUE);
+    //-------------------------------------------------------------------------------
+    //表头
+    public static String[] COLUMN_VIOLATION_COMMENT={"Url","Developer","Comment","CreateTime","UpdateTime","StartLine","EndLine","RealLine"};
+    public static DefaultTableModel VIOLATION_COMMENT_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_COMMENT);
 
     /**
      * 基础的文件缺陷信息
      */
     public static List<FileData> fileDataList = new LinkedList<>();
     //表头
-
     public static String[] COLUMN={"FilePath","Line","Type","Message","引入TP/FP","修复TP/FP","Actionable","Priority","Repair Details","Remark"};
-
     public static DefaultTableModel SCANFILE_MODEL = new DefaultTableModel(null,COLUMN);
 
 
