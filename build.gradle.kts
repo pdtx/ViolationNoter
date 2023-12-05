@@ -11,7 +11,7 @@ repositories {
 }
 dependencies{
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-    implementation("com.alibaba:fastjson:2.0.24")
+    implementation("com.alibaba:fastjson:2.0.32")
 
     // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
 //    implementation("com.alibaba.fastjson2:fastjson2:2.0.24")
@@ -25,6 +25,9 @@ dependencies{
 
     // https://mvnrepository.com/artifact/org.json/json
     implementation("org.json:json:20230227")
+
+    implementation("org.projectlombok:lombok:1.18.26")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
 }
 
 // Configure Gradle IntelliJ Plugin

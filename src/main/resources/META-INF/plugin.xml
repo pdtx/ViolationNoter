@@ -43,5 +43,9 @@
                 description="Query issue information of files scanned">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
+        <action id="ViolationFile_ID" class="com.yaki.action.ViolationFile" text="Start To Remark Violation"
+                description="Start To remark violation">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
     </actions>
 </idea-plugin>

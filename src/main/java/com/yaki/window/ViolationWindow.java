@@ -5,8 +5,11 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.yaki.data.DataCenter;
 
 import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 public class ViolationWindow {
     private JPanel violationPanel;
@@ -24,26 +27,24 @@ public class ViolationWindow {
 
     private void init() {
         issueTable.setModel(DataCenter.VIOLATION_ISSUE_MODEL);
-        issueTable.setEnabled(true);
 
         commentTable.setModel(DataCenter.VIOLATION_COMMENT_MODEL);
 
-        // step1: 登录
+        Vector<String> vector1 = new Vector<String>();
+        vector1.add("TP");
+        vector1.add("FP");
 
-        // step2: 选择指定版本指定文件
-        // TODO
-
-        // step3: 获取缺陷和评论信息
-        // TODO
-
-        // step4: 获取commit message
-        // TODO
-
-        // step5: 标记缺陷数据
-        // TODO
-
-        // step6: 关联评论/commit message
-        // TODO
+        final JComboBox<String> comboBox1 = new JComboBox<String>(vector1);
+        //下拉框监听
+        comboBox1.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    System.out.println(comboBox1.getSelectedItem());
+                }
+            }
+        });
+        issueTable.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(comboBox1));
 
         // step7: 更新标记结果
         remarkButton.addMouseListener(new MouseAdapter() {

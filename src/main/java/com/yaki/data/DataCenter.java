@@ -10,16 +10,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DataCenter {
+    //用户相关
     public static boolean login;//登录状态
     public static String registerUrl = "http://10.176.34.85:8155/annotator";
     public static String userUuid;
 
+    //文件相关
     public static String repoName;
     public static String file_path;
     public static String commitId;//commitId
+    public static String repoUuid;
+
+    //数据相关
+    public static String issueUrl = "http://10.176.34.85:8155/violation/tracker-file";
+    public static String commentUrl = "http://10.176.34.85:8155/violation/comment/tracker-file";
+    public static List<ViolationIssue> violationIssues = new LinkedList<>();
+    public static List<ViolationComment> violationComments = new LinkedList<>();
+
     public static String preTracker = "http://10.176.34.96:8105/issue/tracker-file?repo_uuid=";//github api前缀
     public static String preUrl = "https://api.github.com/repos/apache/";//github api前缀
-    public static FileData fileData;
 
 
     public static String SELECT_TXT;
@@ -47,7 +56,12 @@ public class DataCenter {
     public static DefaultTableModel ISSUE_MODEL = new DefaultTableModel(null,COLUMN_ISSUE);
     //-------------------------------------------------------------------------------
     //表头
-    public static String[] COLUMN_VIOLATION_ISSUE={"FilePath","Line","Type","Message","引入TP/FP","修复TP/FP","Actionable","Priority","Repair Details","Remark"};
+    public static String[] COLUMN={"FilePath","Line","Type","Message","引入TP/FP","修复TP/FP","Actionable","Priority","Repair Details","Remark"};
+    public static DefaultTableModel SCANFILE_MODEL = new DefaultTableModel(null,COLUMN);
+    //-------------------------------------------------------------------------------
+
+    //表头
+    public static String[] COLUMN_VIOLATION_ISSUE={"Type","Category","Status","Locations","TP/FP","Actionable","Priority","Remark"};
     public static DefaultTableModel VIOLATION_ISSUE_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_ISSUE);
     //-------------------------------------------------------------------------------
     //表头
@@ -58,11 +72,6 @@ public class DataCenter {
      * 基础的文件缺陷信息
      */
     public static List<FileData> fileDataList = new LinkedList<>();
-    //表头
-    public static String[] COLUMN={"FilePath","Line","Type","Message","引入TP/FP","修复TP/FP","Actionable","Priority","Repair Details","Remark"};
-    public static DefaultTableModel SCANFILE_MODEL = new DefaultTableModel(null,COLUMN);
-
-
     public static DefaultListModel<String> DETAIL_MODEL = new DefaultListModel<>();
     public static List<String> detailList = new LinkedList<>();
     public static List<IssueData> issueList = new LinkedList<>();

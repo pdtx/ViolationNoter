@@ -2,10 +2,13 @@ package com.yaki.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yaki.data.*;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -33,25 +36,16 @@ public class ContentUtils {
 
         httpClient.executeMethod(postMethod);
 
-        String result = postMethod.getResponseBodyAsString();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+        StringBuilder stringBuffer = new StringBuilder();
+        String str = "";
+        while((str = reader.readLine())!=null){
+            stringBuffer.append(str);
+        }
+
+        String result = stringBuffer.toString();
         postMethod.releaseConnection();
         return new JSONObject(JSON.parseObject(result));
-    }
-    public static String sendGetTracker(String urlParam) throws HttpException, IOException {
-        // 创建httpClient实例对象
-        HttpClient httpClient = new HttpClient();
-        // 设置httpClient连接主机服务器超时时间：15000毫秒
-        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(15000);
-        // 创建GET请求方法实例对象
-        GetMethod getMethod = new GetMethod(urlParam);
-        // 设置post请求超时时间
-        getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
-        getMethod.addRequestHeader("Content-Type", "application/json");
-        httpClient.executeMethod(getMethod);
-
-        String result = getMethod.getResponseBodyAsString();
-        getMethod.releaseConnection();
-        return result;
     }
     public static String sendGet(String urlParam) throws HttpException, IOException {
         // 创建httpClient实例对象
@@ -63,17 +57,23 @@ public class ContentUtils {
         // 设置post请求超时时间
         getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
         getMethod.addRequestHeader("Content-Type", "application/json");
-//        getMethod.addRequestHeader("Authorization", "Bearer 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");
         httpClient.executeMethod(getMethod);
 
-        String result = getMethod.getResponseBodyAsString();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream()));
+        StringBuilder stringBuffer = new StringBuilder();
+        String str = "";
+        while((str = reader.readLine())!=null){
+            stringBuffer.append(str);
+        }
+
+        String result = stringBuffer.toString();
         getMethod.releaseConnection();
         return result;
     }
 
     //缺陷信息
     public static void setFileData(String url) throws IOException {
-        JSONObject jsonObject = new JSONObject(JSON.parseObject(sendGetTracker(url)));
+        JSONObject jsonObject = new JSONObject(JSON.parseObject(sendGet(url)));
         String title = "";//文件名
         JSONObject data = (JSONObject) jsonObject.get("data");
         JSONArray rows = (JSONArray) data.get("rows");
@@ -152,9 +152,67 @@ public class ContentUtils {
         System.out.println("registerResponse:"+response);
         // TODO: 记录uuid
         if ((Integer) response.get("code") == 200) {
-//            5ef2082a-b23d-309d-a0dc-0c07a48ee32d
-            DataCenter.userUuid = (String) response.get("data");
+            DataCenter.userUuid = "5ef2082a-b23d-309d-a0dc-0c07a48ee32d";
+//            DataCenter.userUuid = (String) response.get("data");
             DataCenter.login = true;
+        } else {
+            DataCenter.login = true;
+            throw new RuntimeException(String.valueOf(response));
+        }
+    }
+
+    //获取文件相关缺陷
+    public static void getIssueData() throws IOException {
+        System.out.println(DataCenter.issueUrl+"?repo_uuid="+DataCenter.repoUuid+"&commit_id="+DataCenter.commitId+"&file_path="+DataCenter.file_path);
+        // TODO: 由于repoUuid目前只有一个，暂时mock数据
+        DataCenter.repoUuid = "afd03026-3369-3404-b1be-eaff4ea8bba9";
+        DataCenter.commitId = "36a72d9c509a796d9e2bc112fab9356148a13f76";
+        DataCenter.file_path = "curator-framework/src/main/java/org/apache/curator/framework/imps/CuratorFrameworkImpl.java";
+
+        String url = DataCenter.issueUrl+"?repo_uuid="+DataCenter.repoUuid+"&commit_id="+DataCenter.commitId+"&file_path="+DataCenter.file_path;
+        JSONObject response = new JSONObject(JSON.parseObject(sendGet(url)));
+        System.out.println(response);
+
+        if ((Integer) response.get("code") == 200) {
+            JSONObject data = (JSONObject) response.get("data");
+            JSONArray rows = (JSONArray) data.get("rows");
+            DataCenter.violationIssues.clear();
+            List<ViolationIssue> violationIssuesList = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            for(Object row:rows){
+                ViolationIssue violationIssue = objectMapper.convertValue(row, ViolationIssue.class);
+                violationIssuesList.add(violationIssue);
+            }
+            DataCenter.violationIssues.addAll(violationIssuesList);
+            DataConvert.convert_issue(DataCenter.violationIssues);
+        } else {
+            throw new RuntimeException(String.valueOf(response));
+        }
+    }
+
+    //获取文件相关评论
+    public static void getCommentData() throws IOException {
+        System.out.println(DataCenter.commentUrl+"?repo_uuid="+DataCenter.repoUuid+"&commit_id="+DataCenter.commitId+"&file_path="+DataCenter.file_path);
+        // TODO: 由于repoUuid目前只有一个，暂时mock数据
+        DataCenter.repoUuid = "afd03026-3369-3404-b1be-eaff4ea8bba9";
+        DataCenter.commitId = "36a72d9c509a796d9e2bc112fab9356148a13f76";
+        DataCenter.file_path = "curator-framework/src/main/java/org/apache/curator/framework/imps/CuratorFrameworkImpl.java";
+
+        String url = DataCenter.commentUrl+"?repo_uuid="+DataCenter.repoUuid+"&commit_id="+DataCenter.commitId+"&file_path="+DataCenter.file_path;
+        JSONObject response = new JSONObject(JSON.parseObject(sendGet(url)));
+
+        if ((Integer) response.get("code") == 200) {
+            JSONObject data = (JSONObject) response.get("data");
+            JSONArray rows = (JSONArray) data.get("rows");
+            DataCenter.violationComments.clear();
+            List<ViolationComment> violationCommentList = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            for(Object row:rows){
+                ViolationComment violationComment = objectMapper.convertValue(row, ViolationComment.class);
+                violationCommentList.add(violationComment);
+            }
+            DataCenter.violationComments.addAll(violationCommentList);
+            DataConvert.convert_comment(DataCenter.violationComments);
         } else {
             throw new RuntimeException(String.valueOf(response));
         }
