@@ -16,27 +16,29 @@ public class DataConvert {
         return row;
     }
 
-    public static String[] convert_issue_item(ViolationIssue v) {
-        String[] row = new String[8];
+    public static Object[] convert_issue_item(ViolationIssue v) {
+        Object[] row = new Object[8];
         row[0] = v.getType();
         row[1] = v.getCategory();
         row[2] = v.getStatus();
         List<String> locations = v.getLocations().stream().map(l->"["+l.getStartLine()+","+l.getEndLine()+"]").collect(Collectors.toList());
         row[3] = StringUtils.join(locations, ",");
-        row[4] = v.getIsTruePositiveAggregated();
-        row[5] = v.getActionableConsensusScore();
+        row[4] = v.getIsTruePositiveAggregated() == null ? null : v.getIsTruePositiveAggregated() ? "TP" : "FP";
+        row[5] = v.getIsActionableAggregated() == null ? null : v.getIsActionableAggregated() ? "Actionable" : "NonActionable";
         row[6] = v.getPriorityAggregated();
         row[7] = "";
         return row;
     }
 
     public static void convert_issue(List<ViolationIssue> violationIssues) {
+        DataCenter.VIOLATION_ISSUE_MODEL.getDataVector().clear();
         for (ViolationIssue v: violationIssues){
             DataCenter.VIOLATION_ISSUE_MODEL.addRow(convert_issue_item(v));
         }
     }
 
     public static void convert_comment(List<ViolationComment> violationComments) {
+        DataCenter.VIOLATION_COMMENT_MODEL.getDataVector().clear();
         for (ViolationComment v: violationComments){
             String[] row = new String[8];
             row[0] = v.getUrl();

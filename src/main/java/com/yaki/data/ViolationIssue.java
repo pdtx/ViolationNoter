@@ -32,9 +32,9 @@ public class ViolationIssue {
     private String currRawIssueUuid;
     private String currRawIssueDetail;
     private String markIds;
-    private String isTruePositiveAggregated;
-    private String isActionableAggregated;
-    private String priorityAggregated;
+    private Boolean isTruePositiveAggregated;
+    private Boolean isActionableAggregated;
+    private Integer priorityAggregated;
     private String truePositiveConsensusScore;
     private String actionableConsensusScore;
     private String priorityConsensusScore;

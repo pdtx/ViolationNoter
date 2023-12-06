@@ -47,6 +47,33 @@ public class ContentUtils {
         postMethod.releaseConnection();
         return new JSONObject(JSON.parseObject(result));
     }
+    public static JSONObject sendPost(String urlParam, JSONArray requestData) throws IOException {
+        // 创建httpClient实例对象
+        HttpClient httpClient = new HttpClient();
+        // 设置httpClient连接主机服务器超时时间：15000毫秒
+        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(15000);
+        // 创建post请求方法实例对象
+        PostMethod postMethod = new PostMethod(urlParam);
+        // 设置post请求超时时间
+        postMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 60000);
+        postMethod.addRequestHeader("Content-Type", "application/json");
+        // 将JSON对象转换为字符串，并设置为请求主体
+        StringRequestEntity requestEntity = new StringRequestEntity(requestData.toJSONString(), "application/json", "UTF-8");
+        postMethod.setRequestEntity(requestEntity);
+
+        httpClient.executeMethod(postMethod);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream()));
+        StringBuilder stringBuffer = new StringBuilder();
+        String str = "";
+        while((str = reader.readLine())!=null){
+            stringBuffer.append(str);
+        }
+
+        String result = stringBuffer.toString();
+        postMethod.releaseConnection();
+        return new JSONObject(JSON.parseObject(result));
+    }
     public static String sendGet(String urlParam) throws HttpException, IOException {
         // 创建httpClient实例对象
         HttpClient httpClient = new HttpClient();
@@ -152,10 +179,10 @@ public class ContentUtils {
         System.out.println("registerResponse:"+response);
         // TODO: 记录uuid
         if ((Integer) response.get("code") == 200) {
-            DataCenter.userUuid = "5ef2082a-b23d-309d-a0dc-0c07a48ee32d";
-//            DataCenter.userUuid = (String) response.get("data");
+            DataCenter.userUuid = (String) response.get("data");
             DataCenter.login = true;
         } else {
+            DataCenter.userUuid = "5ef2082a-b23d-309d-a0dc-0c07a48ee32d";
             DataCenter.login = true;
             throw new RuntimeException(String.valueOf(response));
         }
@@ -216,6 +243,22 @@ public class ContentUtils {
         } else {
             throw new RuntimeException(String.valueOf(response));
         }
+    }
+
+    //更新标记信息
+    public static void remark(List<ViolationRemark> remarkList) throws IOException {
+        JSONArray requestData = new JSONArray();
+        for (ViolationRemark remark : remarkList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userUuid", remark.getUserUuid());
+            jsonObject.put("violationUuid", remark.getViolationUuid());
+            jsonObject.put("isTruePositive", remark.getIsTruePositive());
+            jsonObject.put("isActionable", remark.getIsActionable());
+            jsonObject.put("priority", remark.getPriority());
+            jsonObject.put("reason", remark.getReason());
+            requestData.add(jsonObject);
+        }
+        JSONObject response = sendPost(DataCenter.remarkUrl, requestData);
     }
 
     //issue信息

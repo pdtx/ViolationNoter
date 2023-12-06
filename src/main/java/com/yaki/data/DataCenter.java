@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +25,10 @@ public class DataCenter {
     //数据相关
     public static String issueUrl = "http://10.176.34.85:8155/violation/tracker-file";
     public static String commentUrl = "http://10.176.34.85:8155/violation/comment/tracker-file";
+    public static String remarkUrl = "http://10.176.34.85:8155/annotate-violation";
     public static List<ViolationIssue> violationIssues = new LinkedList<>();
     public static List<ViolationComment> violationComments = new LinkedList<>();
+    public static HashMap<String, ViolationRemark> remarkHashMap = new HashMap<>();
 
     public static String preTracker = "http://10.176.34.96:8105/issue/tracker-file?repo_uuid=";//github api前缀
     public static String preUrl = "https://api.github.com/repos/apache/";//github api前缀
@@ -61,12 +64,28 @@ public class DataCenter {
     //-------------------------------------------------------------------------------
 
     //表头
-    public static String[] COLUMN_VIOLATION_ISSUE={"Type","Category","Status","Locations","TP/FP","Actionable","Priority","Remark"};
-    public static DefaultTableModel VIOLATION_ISSUE_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_ISSUE);
+    public static String[] COLUMN_VIOLATION_ISSUE={"Type","Category","Status","Locations","TP/FP","Actionable","Priority","Reason"};
+    public static DefaultTableModel VIOLATION_ISSUE_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_ISSUE) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            if (column == 4){
+                return true;
+            }else if (column == 5 && getValueAt(row, 4) != null && getValueAt(row, 4).equals("TP")){
+                return true;
+            }else if (column == 6 && getValueAt(row, 4) != null && getValueAt(row, 4).equals("TP") && getValueAt(row, 5) != null && getValueAt(row, 5).equals("Actionable")){
+                return true;
+            }else return column == 7;
+        }
+    };
     //-------------------------------------------------------------------------------
     //表头
     public static String[] COLUMN_VIOLATION_COMMENT={"Url","Developer","Comment","CreateTime","UpdateTime","StartLine","EndLine","RealLine"};
-    public static DefaultTableModel VIOLATION_COMMENT_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_COMMENT);
+    public static DefaultTableModel VIOLATION_COMMENT_MODEL = new DefaultTableModel(null,COLUMN_VIOLATION_COMMENT) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
     /**
      * 基础的文件缺陷信息

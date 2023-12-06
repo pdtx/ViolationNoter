@@ -3,7 +3,6 @@ package com.yaki.dialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.ui.EditorTextField;
 import com.yaki.data.DataCenter;
 import com.yaki.utils.ContentUtils;
 import org.jetbrains.annotations.Nullable;
